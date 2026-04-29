@@ -17,14 +17,14 @@ int main() {
         manager.add(new CurrentAccount("John", 400, 200));
         manager.add(new PremiumSavings("David", 5000, 0.07, 0.04));
 
-        std::cout << "\n--- Initial Accounts ---\n";
+        std::cout << "\n --- Initial Accounts --- \n";
         manager.displayAll();
 
         manager.get(0)->deposit(300);   
         manager.get(1)->deposit(200);   
         manager.get(5)->deposit(500);   
         manager.get(7)->withdraw(100); 
-        std::cout << "\n--- After Transactions ---\n";
+        std::cout << "\n --- After Transactions --- \n";
         manager.displayAll();
 
         manager.sortByBalance();
@@ -35,7 +35,7 @@ int main() {
             return acc->getBalance() > 2000;
         });
 
-        std::cout << "\n--- First account with balance > 2000 ---\n";
+        std::cout << "\n --- First account with balance > 2000 --- \n";
         if (rich) {
             rich->display();
         } else {
