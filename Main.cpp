@@ -8,49 +8,105 @@ int main() {
     Manager<Account> manager;
 
     try {
+        // Preloaded data (optional)
         manager.add(new SavingsAccount("Sam", 1200, 0.05));
         manager.add(new SavingsAccount("Karen", 800, 0.04));
         manager.add(new PremiumSavings("Kris", 2500, 0.05, 0.02));
         manager.add(new CurrentAccount("Cherry", 600, 300));
-        manager.add(new CurrentAccount("Rao", 1500, 500));
-        manager.add(new PremiumSavings("Mia", 1800, 0.05, 0.03));
-        manager.add(new CurrentAccount("John", 400, 200));
-        manager.add(new PremiumSavings("David", 5000, 0.07, 0.04));
 
-        std::cout << "\n --- Initial Accounts --- \n";
-        manager.displayAll();
+        int choice;
 
-        manager.get(0)->deposit(300);   
-        manager.get(1)->deposit(200);   
-        manager.get(5)->deposit(500);   
-        manager.get(7)->withdraw(100); 
-        std::cout << "\n --- After Transactions --- \n";
-        manager.displayAll();
+        do {
+            std::cout << "\n===== BANK MENU =====\n";
+            std::cout << "1. Add Savings Account\n";
+            std::cout << "2. Add Premium Savings\n";
+            std::cout << "3. Add Current Account\n";
+            std::cout << "4. Deposit\n";
+            std::cout << "5. Withdraw\n";
+            std::cout << "6. Display All\n";
+            std::cout << "7. Sort by Balance\n";
+            std::cout << "8. Find Account > Balance\n";
+            std::cout << "9. Count Accounts > 1000\n";
+            std::cout << "0. Exit\n";
+            std::cout << "Enter choice: ";
+            std::cin >> choice;
 
-        manager.sortByBalance();
-        std::cout << "\n--- Sorted by Balance ---\n";
-        manager.displayAll();
+            if (choice == 1) {
+                std::string name;
+                double bal, rate;
+                std::cout << "Name: "; std::cin >> name;
+                std::cout << "Balance: "; std::cin >> bal;
+                std::cout << "Interest Rate: "; std::cin >> rate;
+                manager.add(new SavingsAccount(name, bal, rate));
+            }
 
-        auto rich = manager.findIf([](Account* acc) {
-            return acc->getBalance() > 2000;
-        });
+            else if (choice == 2) {
+                std::string name;
+                double bal, rate, bonus;
+                std::cout << "Name: "; std::cin >> name;
+                std::cout << "Balance: "; std::cin >> bal;
+                std::cout << "Interest Rate: "; std::cin >> rate;
+                std::cout << "Bonus Rate: "; std::cin >> bonus;
+                manager.add(new PremiumSavings(name, bal, rate, bonus));
+            }
 
-        std::cout << "\n --- First account with balance > 2000 --- \n";
-        if (rich) {
-            rich->display();
-        } else {
-            std::cout << "None found\n";
-        }
+            else if (choice == 3) {
+                std::string name;
+                double bal, limit;
+                std::cout << "Name: "; std::cin >> name;
+                std::cout << "Balance: "; std::cin >> bal;
+                std::cout << "Overdraft Limit: "; std::cin >> limit;
+                manager.add(new CurrentAccount(name, bal, limit));
+            }
 
-       
-        int highCount = 0;
-        for (size_t i = 0; i < manager.size(); i++) {
-            if (manager.get(i)->getBalance() > 1000)
-                highCount++;
-        }
+            else if (choice == 4) {
+                int index;
+                double amount;
+                std::cout << "Account index: "; std::cin >> index;
+                std::cout << "Amount: "; std::cin >> amount;
+                manager.get(index)->deposit(amount);
+            }
 
-        std::cout << "\nTotal accounts with balance > 1000: "
-                  << highCount << "\n";
+            else if (choice == 5) {
+                int index;
+                double amount;
+                std::cout << "Account index: "; std::cin >> index;
+                std::cout << "Amount: "; std::cin >> amount;
+                manager.get(index)->withdraw(amount);
+            }
+
+            else if (choice == 6) {
+                manager.displayAll();
+            }
+
+            else if (choice == 7) {
+                manager.sortByBalance();
+                std::cout << "Sorted successfully.\n";
+            }
+
+            else if (choice == 8) {
+                double threshold;
+                std::cout << "Enter balance threshold: ";
+                std::cin >> threshold;
+
+                auto acc = manager.findIf([&](Account* a) {
+                    return a->getBalance() > threshold;
+                });
+
+                if (acc) acc->display();
+                else std::cout << "No account found.\n";
+            }
+
+            else if (choice == 9) {
+                int count = 0;
+                for (size_t i = 0; i < manager.size(); i++) {
+                    if (manager.get(i)->getBalance() > 1000)
+                        count++;
+                }
+                std::cout << "Accounts > 1000: " << count << "\n";
+            }
+
+        } while (choice != 0);
 
     } catch (const std::exception& e) {
         std::cout << "Error: " << e.what() << '\n';
